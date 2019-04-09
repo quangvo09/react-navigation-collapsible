@@ -128,13 +128,15 @@ class _CollapsibleHeaderBackView extends Component {
     if(Platform.OS.match(/android|web/))
       return null;
 
-    const { isLandscape, navigation, iOSCollapsedColor = 'black' } = this.props;
+    const { isLandscape, navigation } = this.props;
+
     if(!this.state.isShow || !navigation || !navigation.state.params || !navigation.state.params.animatedDiffClampY || !navigation.state.params.headerHeight)
       return null;
 
     const { headerHeight, animatedDiffClampY } = navigation.state.params || {};
     const navigationHeight = getNavigationHeight(isLandscape, headerHeight);
     const translateY = getTranslateY(animatedDiffClampY, headerHeight)
+    const iOSCollapsedColor = this.props.iOSCollapsedColor || navigation.getParam('backgroundColor', 'black');
 
     return (
       <Animated.View 
