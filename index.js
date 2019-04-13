@@ -37,7 +37,7 @@ const getSafeBounceHeight = () => _safeBounceHeight != null ? _safeBounceHeight 
 export const setSafeBounceHeight = (height) => { _safeBounceHeight = height };
 
 
-const getStatusBarHeight = (isLandscape) => {
+export const getStatusBarHeight = (isLandscape) => {
   if (Platform.OS === 'ios') {
     if(isLandscape) return 0;
     return IS_IPHONE_X ? 44 : 20;
