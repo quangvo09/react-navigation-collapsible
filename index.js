@@ -53,31 +53,26 @@ const getTranslateY = (animatedDiffClampY, headerHeight, offset = 0) => (
     inputRange: [getSafeBounceHeight(), getSafeBounceHeight() + headerHeight],
     outputRange: [offset, offset - headerHeight],
     extrapolate: 'clamp'
-  }) 
+  })
 ) || 0;
 const getTranslateProgress = (animatedDiffClampY, headerHeight) => (
   animatedDiffClampY && headerHeight && animatedDiffClampY.interpolate({
     inputRange: [getSafeBounceHeight(), getSafeBounceHeight() + headerHeight],
     outputRange: [0, 1],
     extrapolate: 'clamp'
-  }) 
+  })
 ) || 0;
 const getOpacity = (animatedDiffClampY, headerHeight) => (
   animatedDiffClampY && headerHeight && animatedDiffClampY.interpolate({
     inputRange: [getSafeBounceHeight(), getSafeBounceHeight() + headerHeight],
     outputRange: [1, 0],
     extrapolate: 'clamp'
-  }) 
+  })
 ) || 0;
-
-
-
-
-
 
 const CollapsibleExtraHeader = props => {
   const { children, style : collapsibleBackgroundStyle, navigation } = props;
-  
+
   if(!navigation) return null;
   const { animatedDiffClampY } = navigation.state.params || {};
 
@@ -89,7 +84,7 @@ const CollapsibleExtraHeader = props => {
     : animatedDiffClampY ? getOpacity(animatedDiffClampY, height) : defaultOpacity;
   return (
     <Animated.View style={[collapsibleBackgroundStyle, {
-      width: '100%', 
+      width: '100%',
       position: 'absolute',
       transform: [{translateY}]}]}>
       <Animated.View style={{width: '100%', height: '100%', opacity}}>
@@ -124,6 +119,21 @@ class _CollapsibleHeaderBackView extends Component {
     }
   }
 
+  getNavigationBackgroundColor = () => {
+    const { navigation } = this.props;
+    const backgroundColor = navigation.getParam('backgroundColor', 'black');
+    if (typeof backgroundColor === 'string') {
+      return backgroundColor;
+    }
+
+    if (Array.isArray(backgroundColor)) {
+      const middle = backgroundColor[Math.round((backgroundColor.length - 1) / 2)];
+      return middle;
+    }
+
+    return 'black';
+  }
+
   render(){
     if(Platform.OS.match(/android|web/))
       return null;
@@ -136,16 +146,16 @@ class _CollapsibleHeaderBackView extends Component {
     const { headerHeight, animatedDiffClampY } = navigation.state.params || {};
     const navigationHeight = getNavigationHeight(isLandscape, headerHeight);
     const translateY = getTranslateY(animatedDiffClampY, headerHeight)
-    const iOSCollapsedColor = this.props.iOSCollapsedColor || navigation.getParam('backgroundColor', 'black');
+    const iOSCollapsedColor = this.props.iOSCollapsedColor || this.getNavigationBackgroundColor();
 
     return (
-      <Animated.View 
+      <Animated.View
         style={{
           zIndex: 100,
-          transform: [{translateY: translateY}], 
-          backgroundColor: iOSCollapsedColor, 
-          position: 'absolute', 
-          width: '100%', 
+          transform: [{translateY: translateY}],
+          backgroundColor: iOSCollapsedColor,
+          position: 'absolute',
+          width: '100%',
           height: navigationHeight}}/>
     )
   }
@@ -171,7 +181,7 @@ const collapsibleNavigationOptions = (configOptions, userOptions, navigation) =>
   }
 
   const { collapsibleTranslateY, collapsibleTranslateOpacity } = navigationParams;
-  const headerHeight = userOptions.headerStyle && userOptions.headerStyle.height 
+  const headerHeight = userOptions.headerStyle && userOptions.headerStyle.height
     ? userOptions.headerStyle.height
     : defaultHeaderHeight;
   if(navigationParams.headerHeight !== headerHeight){
@@ -196,7 +206,7 @@ const collapsibleNavigationOptions = (configOptions, userOptions, navigation) =>
       opacity: Platform.select({ios: collapsibleTranslateOpacity || 1, android: global.Expo ? (collapsibleTranslateOpacity || 1) : 1, web: 1}),
       height: headerHeight,
     },
-    headerTransparent: true, 
+    headerTransparent: true,
   };
 
   return collapsibleOptions;
@@ -311,11 +321,11 @@ export const withCollapsible = (WrappedScreen, collapsibleParams = {}, tabNaviga
   const hoist = hoistNonReactStatic(_withCollapsible, WrappedScreen);
 
   switch (collapsibleType) {
-    case CollapsibleType.defaultHeader: 
+    case CollapsibleType.defaultHeader:
       hoist.navigationOptions = props => {
         const wrapScreenNavOptions = WrappedScreen.navigationOptions ? WrappedScreen.navigationOptions : {};
         const userOptions = typeof wrapScreenNavOptions === 'function' ? wrapScreenNavOptions(props) : wrapScreenNavOptions;
-        
+
         const { navigationOptions, navigation } = props;
         return collapsibleNavigationOptions(navigationOptions, userOptions, navigation);
       }
@@ -334,7 +344,7 @@ export const withCollapsibleForTab = (MaterialTopTabNavigator, collapsibleParams
     render() {
       // eslint-disable-next-line no-unused-vars
       const { paddingHeight, translateY, translateOpacity, translateProgress } = this.props.collapsible;
-      
+
       switch (collapsibleType) {
         case CollapsibleType.defaultHeader:
           return (
