@@ -33,7 +33,7 @@ export const IS_IPHONE_X =
 
 const defaultHeaderHeight = Platform.select({ios: 44, android: 56, web: 50});
 let _safeBounceHeight;
-const getSafeBounceHeight = () => _safeBounceHeight != null ? _safeBounceHeight : Platform.select({ios: 300, android: 100, web: 200});
+export const getSafeBounceHeight = () => _safeBounceHeight != null ? _safeBounceHeight : Platform.select({ios: 300, android: 100, web: 200});
 export const setSafeBounceHeight = (height) => { _safeBounceHeight = height };
 
 
